@@ -129,6 +129,18 @@
                     "display_name": "NeedsPostmortem",
                     "type": "varchar(50)",
                     "nullable": true
+                },
+                {
+                    "name": "start_date",
+                    "display_name": "StartDate",
+                    "type": "datetime",
+                    "nullable": true
+                },
+                {
+                    "name": "end_date",
+                    "display_name": "EndDate",
+                    "type": "datetime",
+                    "nullable": true
                 }
             ]
         },

@@ -20,7 +20,10 @@ const config = {
   UNIQUE_VALUES_FOR_DYNAMIC_ATTRS: 10,
   MAX_VARIANTS: -1,
   MAX_SEQUENCES: -1,
-  SHOW_SUMMARY: true
+  SHOW_SUMMARY: true,
+  DUAL_TIMESTAMP_MODE: true,
+  TIMESTAMP_1_DATE: "2024-01-01",
+  TIMESTAMP_2_DATE: "2024-06-01"
 };
 
 function loadAndSetUserConfigurations() {

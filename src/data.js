@@ -20,6 +20,16 @@ function generateCases(numCases) {
       if (field.primary_key) {
         caseRecord._id = i;
         caseRecord[field.display_name] = i;
+      } else if (field.name === 'start_date') {
+        const startDate = config.DUAL_TIMESTAMP_MODE 
+          ? config.TIMESTAMP_1_DATE
+          : faker.date.past({ years: config.TIMEFRAME_IN_YEARS });
+        caseRecord[field.display_name] = moment(startDate).format("YYYY-MM-DD HH:mm:ss.SSS");
+      } else if (field.name === 'end_date') {
+        const endDate = config.DUAL_TIMESTAMP_MODE 
+          ? config.TIMESTAMP_2_DATE
+          : faker.date.recent({ days: 30 });
+        caseRecord[field.display_name] = moment(endDate).format("YYYY-MM-DD HH:mm:ss.SSS");
       } else {
         caseRecord[field.display_name] = getRandomString(field.name);
       }
@@ -52,7 +62,9 @@ function generateEvents(cases) {
     caseNumber++;
 
     const vocabulary = getVocabulary();
-    const startDate = faker.date.past({ years: config.TIMEFRAME_IN_YEARS });
+    const startDate = config.DUAL_TIMESTAMP_MODE 
+      ? config.TIMESTAMP_1_DATE
+      : faker.date.past({ years: config.TIMEFRAME_IN_YEARS });
     let currentDate = moment(startDate);
 
     const variant = generateEventVariant()
