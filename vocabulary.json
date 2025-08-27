@@ -176,11 +176,18 @@
                     }
                 },
                 {
-                    "name": "date",
-                    "display_name": "Date",
+                    "name": "start_time",
+                    "display_name": "StartTime",
                     "type": "datetime",
                     "nullable": true,
-                    "event_date": true
+                    "event_start_date": true
+                },
+                {
+                    "name": "end_time",
+                    "display_name": "EndTime",
+                    "type": "datetime",
+                    "nullable": true,
+                    "event_end_date": true
                 },
                 {
                     "name": "actor",

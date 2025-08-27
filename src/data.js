@@ -83,8 +83,14 @@ function generateEvents(cases) {
           event[field.display_name] = caseRecord._id;
         } else if (field.event_action) {
           event[field.display_name] = field.foreign_key ? valueToForeignKey(eventName, field.name) : eventName;
-        } else if (field.event_date) {
+        } else if (field.event_start_date) {
           event[field.display_name] = currentDate.format(
+            "YYYY-MM-DD HH:mm:ss.SSS"
+          );
+        } else if (field.event_end_date) {
+          const durationMinutes = faker.number.int({ min: 1, max: 120 });
+          const endTime = moment(currentDate).add(durationMinutes, 'minutes');
+          event[field.display_name] = endTime.format(
             "YYYY-MM-DD HH:mm:ss.SSS"
           );
         } else if (field.foreign_key) {
