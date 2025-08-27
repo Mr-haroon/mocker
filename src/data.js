@@ -65,7 +65,13 @@ function generateEvents(cases) {
     const startDate = config.DUAL_TIMESTAMP_MODE 
       ? config.TIMESTAMP_1_DATE
       : faker.date.past({ years: config.TIMEFRAME_IN_YEARS });
+    const endDate = config.DUAL_TIMESTAMP_MODE 
+      ? config.TIMESTAMP_2_DATE
+      : faker.date.recent({ days: 30 });
+    
     let currentDate = moment(startDate);
+    const totalDuration = moment(endDate).diff(moment(startDate));
+    const eventInterval = totalDuration / numTransitions;
 
     const variant = generateEventVariant()
     for (const eventName of variant) {
@@ -89,20 +95,24 @@ function generateEvents(cases) {
       });
 
       transitions.push(event);
-      currentDate.add({
-        days: faker.number.int({
-          min: config.MIN_DAYS_BETWEEN_EVENTS,
-          max: config.MAX_DAYS_BETWEEN_EVENTS,
-        }),
-        hours: faker.number.int({
-          min: config.MIN_HOURS_BETWEEN_EVENTS,
-          max: config.MAX_HOURS_BETWEEN_EVENTS,
-        }),
-        minutes: faker.number.int({
-          min: config.MIN_MINUTES_BETWEEN_EVENTS,
-          max: config.MAX_MINUTES_BETWEEN_EVENTS,
-        }),
-      });
+      if (config.DUAL_TIMESTAMP_MODE) {
+        currentDate.add(eventInterval, 'milliseconds');
+      } else {
+        currentDate.add({
+          days: faker.number.int({
+            min: config.MIN_DAYS_BETWEEN_EVENTS,
+            max: config.MAX_DAYS_BETWEEN_EVENTS,
+          }),
+          hours: faker.number.int({
+            min: config.MIN_HOURS_BETWEEN_EVENTS,
+            max: config.MAX_HOURS_BETWEEN_EVENTS,
+          }),
+          minutes: faker.number.int({
+            min: config.MIN_MINUTES_BETWEEN_EVENTS,
+            max: config.MAX_MINUTES_BETWEEN_EVENTS,
+          }),
+        });
+      }
     }
     if (config.SHOW_PROGRESS && caseNumber % config.PROGRESS_INTERVAL == 0) {
       showProgress(
