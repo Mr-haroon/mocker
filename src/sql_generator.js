@@ -17,7 +17,7 @@ function generateSqlInsert(data, schema) {
         .filter(([key]) => !key.startsWith("_"))
         .map(([key, value]) => {
           if (typeof value === "string") {
-            value = value.replace("'", "''");
+            value = value.replace(/'/g, "''");
             return `'${value}'`;
           }
           return value;
@@ -69,7 +69,7 @@ function generateTableSql(table) {
 }
 
 function generateSchemaSql(schema) {
-  let sql = "START TRANSACTION;\n\n";
+  let sql = "SET FOREIGN_KEY_CHECKS = 0;\nSTART TRANSACTION;\n\n";
 
   sql += generateDropTableSql(schema.events);
   sql += generateDropTableSql(schema.cases);
@@ -90,7 +90,7 @@ function generateSchemaSql(schema) {
 
   sql += generateTableSql(schema.cases);
   sql += generateTableSql(schema.events);
-  sql += "COMMIT;";
+  sql += "SET FOREIGN_KEY_CHECKS = 1;\nCOMMIT;";
 
   return sql;
 }
