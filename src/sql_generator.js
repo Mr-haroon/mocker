@@ -16,16 +16,19 @@ function generateSqlInsert(data, schema) {
       const values = Object.entries(obj)
         .filter(([key]) => !key.startsWith("_"))
         .map(([key, value]) => {
+          if (value === null || value === undefined) {
+            return "NULL";
+          }
           if (typeof value === "string") {
-            value = value.replace(/'/g, "''");
+            value = value.replace(/'/g, "''").replace(/\0/g, "");
             return `'${value}'`;
           }
           return value;
         });
-      return `(${values.join(", ")})\n`;
+      return `(${values.join(", ")})`;
     });
 
-    const sql = `INSERT INTO ${tableName} (${columnsList.join(", ")})\n VALUES ${valueSets.join(", ")};`;
+    const sql = `INSERT INTO ${tableName} (${columnsList.join(", ")})\nVALUES ${valueSets.join(",\n")};`;
     statements.push(sql);
   }
 
