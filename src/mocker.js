@@ -38,7 +38,7 @@ async function saveToSql(vocabulary, cases, events) {
 
   const schema = generateSchemaSql(vocabulary.schema);
   await writeFile('out/schema.sql', schema);
-  appendToCombinedSqlFile(schema + '\n\n');
+  await appendToCombinedSqlFile(schema + '\n\n');
 
   //"Lookup data"
   if (vocabulary.data) {
@@ -53,19 +53,19 @@ async function saveToSql(vocabulary, cases, events) {
 
       const sqlInsertsData = generateSqlInsert(data, vocabulary.schema.data.find(e => e.lookup_for == table));
       await writeFile(`out/${fileNameForData(table)}.sql`, sqlInsertsData);
-      appendToCombinedSqlFile(sqlInsertsData + '\n\n');
+      await appendToCombinedSqlFile(sqlInsertsData + '\n\n');
     }
   }
 
   const sqlInsertsCases = generateSqlInsert(cases, vocabulary.schema.cases);
   await writeFile(`out/${fileNameForCases()}.sql`, sqlInsertsCases);
-  appendToCombinedSqlFile(sqlInsertsCases);
-  appendToCombinedSqlFile('\n');
+  await appendToCombinedSqlFile(sqlInsertsCases);
+  await appendToCombinedSqlFile('\n');
 
   const sqlInsertsEvents = generateSqlInsert(events, vocabulary.schema.events);
   await writeFile(`out/${fileNameForEvents(events.length)}.sql`, sqlInsertsEvents);
-  appendToCombinedSqlFile(sqlInsertsEvents);
-  appendToCombinedSqlFile('\n');
+  await appendToCombinedSqlFile(sqlInsertsEvents);
+  await appendToCombinedSqlFile('\n');
 }
 
 async function appendToCombinedSqlFile(data) {
