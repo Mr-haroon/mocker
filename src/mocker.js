@@ -52,19 +52,32 @@ async function saveToSql(vocabulary, cases, events) {
       }
 
       const sqlInsertsData = generateSqlInsert(data, vocabulary.schema.data.find(e => e.lookup_for == table));
-      await writeFile(`out/${fileNameForData(table)}.sql`, sqlInsertsData);
-      await appendToCombinedSqlFile(sqlInsertsData + '\n\n');
+      await writeFile(`out/${fileNameForData(table)}.sql`, sqlInsertsData.join('\n'));
+      for (const stmt of sqlInsertsData) {
+        await appendToCombinedSqlFile(stmt + '\n');
+      }
+      await appendToCombinedSqlFile('\n');
     }
   }
 
   const sqlInsertsCases = generateSqlInsert(cases, vocabulary.schema.cases);
-  await writeFile(`out/${fileNameForCases()}.sql`, sqlInsertsCases);
-  await appendToCombinedSqlFile(sqlInsertsCases);
+  await writeFile(`out/${fileNameForCases()}.sql`, sqlInsertsCases[0]);
+  for (let i = 1; i < sqlInsertsCases.length; i++) {
+    await writeFile(`out/${fileNameForCases()}.sql`, '\n' + sqlInsertsCases[i], { flags: 'a' });
+  }
+  for (const stmt of sqlInsertsCases) {
+    await appendToCombinedSqlFile(stmt + '\n');
+  }
   await appendToCombinedSqlFile('\n');
 
   const sqlInsertsEvents = generateSqlInsert(events, vocabulary.schema.events);
-  await writeFile(`out/${fileNameForEvents(events.length)}.sql`, sqlInsertsEvents);
-  await appendToCombinedSqlFile(sqlInsertsEvents);
+  await writeFile(`out/${fileNameForEvents(events.length)}.sql`, sqlInsertsEvents[0]);
+  for (let i = 1; i < sqlInsertsEvents.length; i++) {
+    await writeFile(`out/${fileNameForEvents(events.length)}.sql`, '\n' + sqlInsertsEvents[i], { flags: 'a' });
+  }
+  for (const stmt of sqlInsertsEvents) {
+    await appendToCombinedSqlFile(stmt + '\n');
+  }
   await appendToCombinedSqlFile('\n');
 }
 
